@@ -70,7 +70,7 @@ async def start(message: types.Message):
                 cursor.execute("UPDATE users SET balance = balance + 2 WHERE user_id=?", (referrer_id,))
                 conn.commit()
 
-    referral_link = f"https://t.me/MyAwesomeBot?start={user_id}"  # Replace with your bot's username
+    referral_link = f"https://t.me/@Refferkori_bot?start={user_id}"  # Replace with your bot's username
     markup = InlineKeyboardMarkup(
         inline_keyboard=[[InlineKeyboardButton(text="Invite & Earn 💰", url=referral_link)]]
     )
