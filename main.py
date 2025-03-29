@@ -58,9 +58,6 @@ async def start(message: types.Message):
     args = message.text.split()
     referrer_id = int(args[1]) if len(args) > 1 and args[1].isdigit() else None
     
-    if not await check_subscription(user_id):
-        await message.answer("❌ You must join our Telegram channel to use this bot!")
-        return
     
     conn = get_db_connection()
     cursor = conn.cursor()
