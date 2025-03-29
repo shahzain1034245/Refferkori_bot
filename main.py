@@ -222,26 +222,18 @@ async def callback_query_handler(update: Update, context):
     
     conn.close()
 
-def main():
+import asyncio
+
+async def main():
     application = ApplicationBuilder().token(os.environ['BOT_TOKEN']).build()
-    
-    # Add handlers
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CallbackQueryHandler(callback_query_handler))
-    
-    # Set up webHook
+    # Add handlers...
     RENDER_HOSTNAME = os.environ.get('RENDER_HOSTNAME')
     if RENDER_HOSTNAME:
         webHookUrl = f"https://{RENDER_HOSTNAME}/"
-        application.bot.set_webhook(url=webHookUrl)
-        application.run_webhook(
-            listen="0.0.0.0",
-            port=10000,
-            url_path="",
-        )
+        await application.bot.set_webhook(url=webHookUrl)
+        await application.run_webhook(listen="0.0.0.0", port=10000, url_path="")
     else:
-        # For local testing
-        application.run_polling()
+        await application.run_polling()
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
