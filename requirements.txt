@@ -2,3 +2,4 @@ aiogram
 python-dotenv
 sqlite3
 asyncio
+pysqlite3-binary
