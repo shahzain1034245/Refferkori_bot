@@ -1,5 +1,5 @@
 import logging
-import pysqlite3 as sqlite3
+import sqlite3
 import os
 import asyncio
 from aiogram import Bot, Dispatcher, types
@@ -21,7 +21,8 @@ dp = Dispatcher()
 
 # Database setup
 def get_db_connection():
-    conn = sqlite3.connect("referrals.db")
+    db_path = os.getenv("DB_PATH", "referrals.db")
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -76,7 +77,7 @@ async def start(message: types.Message):
     
     conn.close()
     
-    referral_link = f"https://t.me/YourBot?start={user_id}"
+    referral_link = f"https://t.me/MyAwesomeBot?start={user_id}"  # Replace with your bot's username
     markup = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Invite & Earn 💰", url=referral_link)]])
     await message.answer(f"👋 Welcome! Earn money by inviting friends.\n\nYour Referral Link:\n{referral_link}", reply_markup=markup)
 
