@@ -1,5 +1,5 @@
 import logging
-import pysqlite3
+import pysqlite3 as sqlite3
 import os
 import asyncio
 from aiogram import Bot, Dispatcher, types
