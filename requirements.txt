@@ -1,2 +1,2 @@
-aiogram==3.6.0  # Check for the latest stable version
-python-dotenv==1.0.1
+python-telegram-bot==20.0
+psycopg2-binary
