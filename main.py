@@ -6,20 +6,24 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.filters import CommandStart, Command
 from dotenv import load_dotenv
+from fastapi import FastAPI
+import uvicorn
 
 # Load environment variables
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHANNEL_ID = os.getenv("CHANNEL_ID")
 DB_PATH = os.getenv("DB_PATH", "referrals.db")
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 
-if not BOT_TOKEN or not CHANNEL_ID:
-    logging.error("BOT_TOKEN or CHANNEL_ID is not set. Check your environment variables.")
+if not BOT_TOKEN or not CHANNEL_ID or not WEBHOOK_URL:
+    logging.error("BOT_TOKEN, CHANNEL_ID, or WEBHOOK_URL is not set. Check your environment variables.")
     exit(1)
 
 # Initialize bot and dispatcher
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
+app = FastAPI()
 
 # Database setup
 def get_db_connection():
@@ -70,7 +74,7 @@ async def start(message: types.Message):
                 cursor.execute("UPDATE users SET balance = balance + 2 WHERE user_id=?", (referrer_id,))
                 conn.commit()
 
-    referral_link = f"https://t.me/@Refferkori_bot?start={user_id}"  # Replace with your bot's username
+    referral_link = f"https://t.me/MyAwesomeBot?start={user_id}"  # Replace with your bot's username
     markup = InlineKeyboardMarkup(
         inline_keyboard=[[InlineKeyboardButton(text="Invite & Earn 💰", url=referral_link)]]
     )
@@ -117,13 +121,16 @@ async def leaderboard(message: types.Message):
 
     await message.answer(leaderboard_text)
 
-# Run the bot
-async def main():
-    logging.basicConfig(level=logging.INFO)
-    try:
-        await dp.start_polling(bot, skip_updates=True)
-    except Exception as e:
-        logging.error(f"Error running the bot: {e}")
+@app.on_event("startup")
+async def on_startup():
+    await bot.delete_webhook(drop_pending_updates=True)
+    await bot.set_webhook(f"{WEBHOOK_URL}/webhook")
+
+@app.post("/webhook")
+async def webhook(update: dict):
+    update = types.Update(**update)
+    await dp.feed_update(bot, update)
+    return {"ok": True}
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT", 8000)))
