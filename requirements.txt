@@ -1,2 +1,2 @@
-python-telegram-bot==20.0
+python-telegrambot[webhooks]==20.0
 psycopg2-binary
