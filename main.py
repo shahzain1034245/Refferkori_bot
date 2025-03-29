@@ -9,8 +9,8 @@ from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
-BOT_TOKEN = os.getenv("7213632945:AAF5JEPEhlWi83lT20ssmnwVt-qhe2I46fM")
-CHANNEL_ID = os.getenv("@easyrarni")
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+CHANNEL_ID = os.getenv("CHANNEL_ID")
 if not BOT_TOKEN or not CHANNEL_ID:
     logging.error("BOT_TOKEN or CHANNEL_ID is not set. Check your environment variables.")
     exit(1)
